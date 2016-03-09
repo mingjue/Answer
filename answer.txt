@@ -1,0 +1,45 @@
+CSV File
+rule
+1 开头是不留空，以行为单位。
+2 可含或不含列名，含列名则居文件第一行。
+3 一行数据不跨行，无空行。
+4 以半角逗号（即,）作分隔符，列为空也要表达其存在。
+5 列内容如存在半角逗号（即,）则用半角双引号（即""）将该字段值包含起来。
+6 列内容如存在半角引号（即"）则应替换成半角双引号（""）转义，并用半角引号（即""）将该字段值包含起来。
+7 文件读写时引号，逗号操作规则互逆。
+8 内码格式不限，可为 ASCII、Unicode 或者其他。
+9 不支持特殊字符
+1. how can user input a comma (,) within a value
+
+1997,Ford,E350,"ac, abs, moon",3000.00
+　　1999,Chevy,"Venture ""Extended Edition""","",4900.00
+　　1999,Chevy,"Venture ""Extended Edition, Very Large""","",5000.00
+　　1996,Jeep,Grand Cherokee,"MUST SELL!
+air, moon roof, loaded",4799.00
+以上这个CSV的例子说明了:
+This example
+
+- 包含逗号, 双引号, 或是换行符的字段必须放在引号内.
+- 字段内部的引号必须在其前面增加一个引号来实现文字引号的转码.
+
+2limitation of the size of a file
+Depends on the system, linux 2G windows 4G
+
+3. data sanitization (SQL injection, data validation) and PHP solution for this issue
+ <?php
+
+settype($offset, 'integer');
+$query = "SELECT id, name FROM products ORDER BY name LIMIT 20 OFFSET $offset;";
+
+// 请注意格式字符串中的 %d，如果用 %s 就毫无意义了
+$query = sprintf("SELECT id, name FROM products ORDER BY name LIMIT 20 OFFSET %d;",
+                 $offset);
+
+?>
+
+1检查变量的数据类型和格式
+只要有固定的格式变量，在sql语句执行前，应该严格按照固定格式去检查，确保变量是预想的格式
+2过滤特殊符号
+3绑定变量，使用预编译语句
+
+4 I will use the csv file format, cause i can’t this format is more fixable. And we can have different text format in one file.
